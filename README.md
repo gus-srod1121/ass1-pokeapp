@@ -1,1 +1,1 @@
-# ass1-pokeapp
+# Assignment 1 - Pokemon App
