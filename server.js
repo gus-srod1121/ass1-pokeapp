@@ -1,57 +1,65 @@
-/* EXPRESS */
 const express = require("express");
 var session = require("express-session");
+const mongoose = require("mongoose");
+
+const favoritesSchema = new mongoose.Schema({
+    username: String,
+    pokeName: String,
+});
+const favoritesModel = mongoose.model("favorites", favoritesSchema);
+const timelineSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    date: Date,
+    username: String
+});
+const timelineModel = mongoose.model('timeline', timelineSchema);
+
+main().catch(err => console.log(err));
 
 const app = express();
-const PORT = 3000;
 
 app.use(session({
     secret: "keyboard cat",
     resave: true,
     saveUninitialized: true,
-    cookie: {
-        secure: false
-    }
+    cookie: { secure: false }
 }));
 
-app.use(express.static("public"));
+const PORT = 3000;
+
 app.set("view engine", "ejs");
 
-app.use(express.urlencoded());
-const usersArr = [
-  { username: "admin1", password: "admin1" },
-  { username: "admin2", password: "admin2" },
-  { username: "user1", password: "password1" },
-  { username: "user2", password: "password2" },
-  { username: "user3", password: "password3" }
-];
-
-app.post("/login", (req, res) => {
-    const userFound = usersArr.find(
-        element => element.username == req.body.username 
-        && element.password == req.body.password
-    );
-
-    if (userFound) {
-        req.session.username = req.body.username;
-        res.redirect("/home");
-    } else {
-        res.status(401)
-        .send("Bad attempt. You are not going to get any of this soup!");
-    }
-});
-
-
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-/* Send a 204 No Content Found when the browser asks for a tab icon */
-app.get("/favicon.ico", (req, res) => res.status(204).end());
-
 
 app.get("/", (req, res) => {
     res.redirect("/home");
+});
+
+app.use(express.static("public"));
+
+const usersArr = [
+    { username: "admin1", password: "admin1" },
+    { username: "admin2", password: "admin2" },
+    { username: "user1", password: "password1" },
+    { username: "user2", password: "password2" },
+    { username: "user3", password: "password3" }
+];
+
+app.use(express.urlencoded());
+
+app.post("/login", (req, res) => {
+    const userFound = usersArr.find(element => element.username === req.body.username && element.password === req.body.password);
+
+    if (userFound) {
+        req.session.username = req.body.username;
+        addToTimeline("Login", "User logged in", new Date(), req.session.username);
+        res.redirect("/home");
+    } else {
+        res.status(401).send("Bad attempt. No Soup for you!");
+    }
 });
 
 function isAuthenticated(req, res, next) {
@@ -64,47 +72,51 @@ function isAuthenticated(req, res, next) {
 
 app.use(isAuthenticated);
 app.get("/home", (req, res) => {
-    res.render("home.ejs", {
-        username: req.session.username
-    })
+    res.render("home.ejs", { username: req.session.username });
 })
-
-
-
-/* MONGOOSE */
-const mongoose = require("mongoose");
-
-const favoritesSchema = new mongoose.Schema({
-    username: String,
-    pokeName: String,
-});
-const favoritesModel = mongoose.model("favorites", favoritesSchema);
-
-main().catch(err => console.log(err));
 
 async function main() {
     await mongoose.connect("mongodb://127.0.0.1:27017/test");
-    // await mongoose.connect("mongodb://user:password@127.0.0.1:27017/test"); for auth
+    // await mongoose.connect("mongodb://user:password@127.0.0.1:27017/test");
 }
 
 app.get("/favorites", async (req, res) => {
     try {
-        const favoritesFound = await favoritesModel.find({ username: req.session.username })
-        res.json(favoritesFound)
+        const favoritesFound = await favoritesModel.find({ username: req.session.username });
+        res.json(favoritesFound);
     } catch (error) {
-        console.log(error)
-        res.status(403).send("What favorites?")
+        res.status(403).send("Bad get favorites");
     }
-});
+})
 
 app.get("/addToFavorites/:pokemonName", async (req, res) => {
     try {
-        const favoritesFound = await favoritesModel.create({
+        const favoritesFound = await favoritesModel.create({ 
             username: req.session.username,
-            pokeName: req.params.pokemonName
+            pokeName: req.params.pokemonName 
         });
+        addToTimeline("Added Favorite", req.params.pokemonName, new Date(), req.session.username);
         res.json(favoritesFound);
     } catch (error) {
-        res.status(403).send("Bad post favs");
+        console.log(error);
+        res.status(403).send("Bad post favorites");
     }
 });
+
+app.get('/timeline', async (req, res) => {
+    try {
+        const timelineFound = await timelineModel.find({ username: req.session.username });
+        res.json(timelineFound);
+    } catch (error) {
+        console.log('db error', error);
+    }
+});
+
+const addToTimeline = async (title, description, date, username) => {
+    try {
+        const result = await timelineModel.create({ title, description, date, username });
+        return result;
+    } catch (error) {
+        console.log('db error', error);
+    }
+}
