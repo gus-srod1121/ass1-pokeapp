@@ -1,3 +1,4 @@
+/* EXPRESS */
 const express = require("express");
 var session = require("express-session");
 
@@ -67,3 +68,43 @@ app.get("/home", (req, res) => {
         username: req.session.username
     })
 })
+
+
+
+/* MONGOOSE */
+const mongoose = require("mongoose");
+
+const favoritesSchema = new mongoose.Schema({
+    username: String,
+    pokeName: String,
+});
+const favoritesModel = mongoose.model("favorites", favoritesSchema);
+
+main().catch(err => console.log(err));
+
+async function main() {
+    await mongoose.connect("mongodb://127.0.0.1:27017/test");
+    // await mongoose.connect("mongodb://user:password@127.0.0.1:27017/test"); for auth
+}
+
+app.get("/favorites", async (req, res) => {
+    try {
+        const favoritesFound = await favoritesModel.find({ username: req.session.username })
+        res.json(favoritesFound)
+    } catch (error) {
+        console.log(error)
+        res.status(403).send("What favorites?")
+    }
+});
+
+app.get("/addToFavorites/:pokemonName", async (req, res) => {
+    try {
+        const favoritesFound = await favoritesModel.create({
+            username: req.session.username,
+            pokeName: req.params.pokemonName
+        });
+        res.json(favoritesFound);
+    } catch (error) {
+        res.status(403).send("Bad post favs");
+    }
+});
