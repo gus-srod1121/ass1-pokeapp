@@ -1,10 +1,20 @@
 const express = require("express");
+var session = require("express-session");
+
 const app = express();
 const PORT = 3000;
 
+app.use(session({
+    secret: "keyboard cat",
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        secure: false
+    }
+}));
+
 app.use(express.static("public"));
-
-
+app.set("view engine", "ejs");
 
 app.use(express.urlencoded());
 const usersArr = [
@@ -22,7 +32,8 @@ app.post("/login", (req, res) => {
     );
 
     if (userFound) {
-        res.send(`Welcome ${req.body.username}`);
+        req.session.username = req.body.username;
+        res.redirect("/home");
     } else {
         res.status(401)
         .send("Bad attempt. You are not going to get any of this soup!");
@@ -42,6 +53,17 @@ app.get("/", (req, res) => {
     res.redirect("/home");
 });
 
+function isAuthenticated(req, res, next) {
+    if (req.session.username) {
+        next();
+    } else {
+        res.redirect("/login.html");
+    }
+}
+
+app.use(isAuthenticated);
 app.get("/home", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
-});
+    res.render("home.ejs", {
+        username: req.session.username
+    })
+})
