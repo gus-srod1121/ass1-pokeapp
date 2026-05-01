@@ -1,6 +1,9 @@
+require("dotenv").config();
+
 const express = require("express");
 var session = require("express-session");
 const mongoose = require("mongoose");
+const mongoDbUrl = process.env.MONGODB_URL;
 
 const favoritesSchema = new mongoose.Schema({
     username: String,
@@ -26,7 +29,7 @@ app.use(session({
     cookie: { secure: false }
 }));
 
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 app.set("view engine", "ejs");
 
@@ -76,8 +79,7 @@ app.get("/home", (req, res) => {
 })
 
 async function main() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/test");
-    // await mongoose.connect("mongodb://user:password@127.0.0.1:27017/test");
+    await mongoose.connect("mongodb+srv://pokeapp-server:pokeapp1@pokemon-cluster.4ijbnyi.mongodb.net/?appName=pokemon-cluster");
 }
 
 app.get("/favorites", async (req, res) => {
