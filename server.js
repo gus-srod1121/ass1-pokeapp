@@ -79,7 +79,7 @@ app.get("/home", (req, res) => {
 })
 
 async function main() {
-    await mongoose.connect("mongodb+srv://pokeapp-server:pokeapp1@pokemon-cluster.4ijbnyi.mongodb.net/?appName=pokemon-cluster");
+    await mongoose.connect(mongoDbUrl);
 }
 
 app.get("/favorites", async (req, res) => {
