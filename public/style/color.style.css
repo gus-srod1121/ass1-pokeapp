@@ -1,0 +1,45 @@
+:root {
+
+    /* Background */
+    --bg-primary: none;
+    --bg-secondary: none;
+
+    /* Text */
+    --text-primary: none;
+    --text-secondary: none;
+
+    /* Buttons */
+    --button-bg-primary: none;
+    --button-text-primary: none;
+
+    --button-bg-secondary: none;
+    --button-text-secondary: none;
+}
+
+body {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f1f5f9;
+
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+
+    --button-bg-primary: #4f46e5;
+    --button-text-primary: #ffffff;
+
+    --button-bg-secondary: #e2e8f0;
+    --button-text-secondary: #0f172a;
+}
+
+body.dark-mode {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+
+    --button-bg-primary: #6366f1;
+    --button-text-primary: #ffffff;
+
+    --button-bg-secondary: #334155;
+    --button-text-secondary: #f1f5f9;
+}
