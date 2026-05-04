@@ -1,28 +1,14 @@
 :root {
-
+    /* Light Mode Defaults */
     /* Background */
-    --bg-primary: none;
-    --bg-secondary: none;
-
-    /* Text */
-    --text-primary: none;
-    --text-secondary: none;
-
-    /* Buttons */
-    --button-bg-primary: none;
-    --button-text-primary: none;
-
-    --button-bg-secondary: none;
-    --button-text-secondary: none;
-}
-
-body {
     --bg-primary: #ffffff;
     --bg-secondary: #f1f5f9;
 
+    /* Text */
     --text-primary: #1e293b;
     --text-secondary: #64748b;
 
+    /* Buttons */
     --button-bg-primary: #4f46e5;
     --button-text-primary: #ffffff;
 
@@ -30,7 +16,12 @@ body {
     --button-text-secondary: #0f172a;
 }
 
+body {
+    
+}
+
 body.dark-mode {
+    /* Dark Mode */
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
     
