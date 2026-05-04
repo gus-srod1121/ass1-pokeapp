@@ -23,8 +23,8 @@ body {
     color: var(--text-primary);
 
     transition:
-        background-color 0.3s var(--animation-time),
-        color 0.3s var(--animation-time);
+        background-color var(--animation-time) ease,
+        color var(--animation-time) ease;
 }
 
 body.dark-mode {
