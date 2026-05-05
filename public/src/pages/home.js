@@ -3,6 +3,7 @@ addTofavorites = async function (pokemonName) {
   const resultJSON = await result.json();
   console.log(resultJSON);
   fetchFavorites();
+  fetchTimelineEvents();
 };
 
 fetchPokemons = async function () {
