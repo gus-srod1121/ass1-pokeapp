@@ -1,11 +1,3 @@
-addTofavorites = async function (pokemonName) {
-  const result = await fetch(`/addToFavorites/${pokemonName}`);
-  const resultJSON = await result.json();
-  console.log(resultJSON);
-  fetchFavorites();
-  fetchTimelineEvents();
-};
-
 fetchPokemons = async function () {
   const result = await fetch(`https://pokeapi.co/api/v2/pokemon`);
   const resultJSON = await result.json();
@@ -21,17 +13,12 @@ fetchPokemons = async function () {
   }
 };
 
-const fetchTimeline = async () => {
-    const result = await fetch(`/timeline`);
-    const resultJSON = await result.json();
-    timelineList.innerHTML = "";
-    for (let i = 0; i < resultJSON.length; i++) {
-        const liElement = document.createElement("li");
-        liElement.innerHTML = `
-            <strong>${resultJSON[i].title}</strong>: ${resultJSON[i].description} <em>${resultJSON[i].date}</em>
-        `;
-        timelineList.appendChild(liElement);
-    }
+addTofavorites = async function (pokemonName) {
+  const result = await fetch(`/addToFavorites/${pokemonName}`);
+  const resultJSON = await result.json();
+  console.log(resultJSON);
+  fetchFavorites();
+  fetchTimelineEvents();
 };
 
 fetchFavorites = async function () {
@@ -46,6 +33,19 @@ fetchFavorites = async function () {
   }
 };
 
+const fetchTimelineEvents = async () => {
+    const result = await fetch(`/timeline`);
+    const resultJSON = await result.json();
+    timelineList.innerHTML = "";
+    for (let i = 0; i < resultJSON.length; i++) {
+        const liElement = document.createElement("li");
+        liElement.innerHTML = `
+            <strong>${resultJSON[i].title}</strong>: ${resultJSON[i].description} <em>${resultJSON[i].date}</em>
+        `;
+        timelineList.appendChild(liElement);
+    }
+};
+
 fetchPokemons();
 fetchFavorites();
-fetchTimeline();
+fetchTimelineEvents();
