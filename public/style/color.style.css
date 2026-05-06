@@ -16,6 +16,7 @@
     --button-text-secondary: #0f172a;
 
     --animation-time: 200ms;
+    --shadow: rgba(0, 0, 0, 0.3);
 }
 
 body {
