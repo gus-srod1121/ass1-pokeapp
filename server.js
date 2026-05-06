@@ -63,36 +63,7 @@ app.get("/", (req, res) => {
 
 app.use(express.static("public"));
 
-const usersArr = [
-    {username: "admin1", password: "admin1"},
-    {username: "admin2", password: "admin2"},
-    {username: "user1", password: "password1"},
-    {username: "user2", password: "password2"},
-    {username: "user3", password: "password3"},
-];
-
 app.use(express.urlencoded());
-
-app.post("/login", (req, res) => {
-    const userFound = usersArr.find(
-        (element) =>
-            element.username === req.body.username &&
-            element.password === req.body.password
-    );
-
-    if (userFound) {
-        req.session.username = req.body.username;
-        addToTimeline(
-            "Login",
-            "User logged in",
-            new Date(),
-            req.session.username
-        );
-        res.redirect("/home");
-    } else {
-        res.status(401).send("Bad attempt. No Soup for you!");
-    }
-});
 
 function isAuthenticated(req, res, next) {
     if (req.session.username) {
