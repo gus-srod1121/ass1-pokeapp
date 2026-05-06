@@ -1,7 +1,12 @@
+const express = require("express");
 require("dotenv").config();
 
-const express = require("express");
 var session = require("express-session");
+const FileStore = require("session-file-store")(session);
+
+const bcrypt = require("bcrypt");
+const SALT_ROUNDS = 10;
+
 const mongoose = require("mongoose");
 const mongoDbUrl = process.env.MONGODB_URL;
 
