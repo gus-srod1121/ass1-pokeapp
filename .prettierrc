@@ -7,5 +7,13 @@
     "bracketSpacing": true,
     "arrowParens": "always",
     "semi": true,
-    "printWidth": 100
+    "printWidth": 100,
+    "overrides": [
+        {
+            "files": "*.ejs",
+            "options": {
+                "parser": "html"
+            }
+        }
+    ]
 }

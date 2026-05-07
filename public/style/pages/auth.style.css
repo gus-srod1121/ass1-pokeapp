@@ -1,0 +1,19 @@
+#remember-me-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    gap: 10px;
+    width: 100%;
+
+    margin: 10px;
+}
+
+#remember-me-container * {
+    width: 100%;
+}
+
+#remember-me {
+    width: 1.5em;
+    height: 1.5em;
+}
