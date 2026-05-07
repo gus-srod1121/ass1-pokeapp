@@ -1,4 +1,5 @@
 const DARK_MODE_CLASS = "dark-mode";
+const body = document.body;
 
 export function toggleDarkMode() {
     body.classList.toggle(DARK_MODE_CLASS);

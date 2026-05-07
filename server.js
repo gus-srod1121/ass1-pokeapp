@@ -49,10 +49,11 @@ app.use(
     })
 );
 
-const PORT = process.env.PORT || 3000;
-
+app.use(express.urlencoded());
 app.use(express.static("public"));
 app.set("view engine", "ejs");
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
@@ -93,9 +94,13 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
     const {username, password} = req.body;
     const user = await userModel.findOne({username: username});
-    const match = await bcrypt.compare(password, user.password);
+    if (!user) {
+        res.send("No username matches");
+        return;
+    }
 
-    if (user && match) {
+    const match = await bcrypt.compare(password, user.password);
+    if (match) {
         req.session.username = user.username;
         await addToTimeline(
             "Login",
@@ -104,14 +109,11 @@ app.post("/login", async (req, res) => {
             req.session.username
         );
         res.redirect("/home");
-    } else if (!user) {
-        res.send("No username matches");
     } else {
         res.send("Wrong password");
+        return;
     }
 });
-
-app.use(express.urlencoded());
 
 function isAuthenticated(req, res, next) {
     if (req.session.username) {

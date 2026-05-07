@@ -42,3 +42,15 @@ body.dark-mode {
     --button-bg-secondary: #334155;
     --button-text-secondary: #f1f5f9;
 }
+
+button {
+    background-color: var(--button-bg-primary);
+    color: var(--button-text-primary);
+
+    border: 2px solid var(--button-text-primary);
+    transition: scale var(--animation-time) ease;
+}
+
+button:hover{
+    scale: 105%;
+}
