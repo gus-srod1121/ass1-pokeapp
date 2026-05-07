@@ -18,8 +18,9 @@
         <%- include("components/navbar") %>
 
         <h1>Account</h1>
-        <h3>Hello <%= username %></h3>
-
+        <div class="flex">
+            <h3>Hello <%= username %></h3>
+        </div>
         <ul>
             <form method="POST" action="/logout">
                 <input value="Log Out" type="submit" />

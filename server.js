@@ -162,14 +162,25 @@ app.get("/addToFavorites/:pokemonName", async (req, res) => {
     }
 });
 
-app.get("/timeline", async (req, res) => {
+app.get("/user-json", async (req, res) => {
     try {
-        const timelineFound = await timelineModel.find({
+        const user = await userModel.findOne({
             username: req.session.username,
         });
-        res.json(timelineFound);
+        res.json(user);
     } catch (error) {
-        console.log("db error", error);
+        console.log("error", error);
+    }
+});
+
+app.get("/timeline", async (req, res) => {
+    try {
+        const timeline = await timelineModel.find({
+            username: req.session.username,
+        });
+        res.json(timeline);
+    } catch (error) {
+        console.log("error", error);
     }
 });
 
