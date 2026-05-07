@@ -19,16 +19,7 @@
     --shadow: rgba(0, 0, 0, 0.3);
 }
 
-body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-
-    transition:
-        background-color var(--animation-time) ease,
-        color var(--animation-time) ease;
-}
-
-body.dark-mode {
+:root.dark-mode {
     /* Dark Mode */
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
@@ -41,6 +32,11 @@ body.dark-mode {
 
     --button-bg-secondary: #334155;
     --button-text-secondary: #f1f5f9;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 button {

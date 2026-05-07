@@ -2,7 +2,7 @@ fetchPokemons = async function () {
   try {
     const result = await fetch(`https://pokeapi.co/api/v2/pokemon`);
     const resultJSON = await result.json();
-    console.log(resultJSON);
+    // console.log(resultJSON);
     for (let i = 0; i < resultJSON.results.length; i++) {
       const liElement = document.createElement("li");
       liElement.innerHTML = `
@@ -20,7 +20,7 @@ addTofavorites = async function (pokemonName) {
   try {
     const result = await fetch(`/addToFavorites/${pokemonName}`);
     const resultJSON = await result.json();
-    console.log(resultJSON);
+    // console.log(resultJSON);
     fetchFavorites();
     fetchTimelineEvents();
   } catch (error) {
@@ -32,7 +32,7 @@ fetchFavorites = async function () {
   try {
     const result = await fetch(`/favorites`);
     const resultJSON = await result.json();
-    console.log(resultJSON);
+    // console.log(resultJSON);
     favoritesList.innerHTML = "";
     for (let i = 0; i < resultJSON.length; i++) {
       const liElement = document.createElement("li");
