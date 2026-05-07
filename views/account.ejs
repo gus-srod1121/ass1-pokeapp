@@ -15,15 +15,16 @@
     <body class="">
         <%- include("components/navbar") %>
 
-        <h1>Pokemon List</h1>
-        <ul id="pokemonList"></ul>
+        <h1>Account</h1>
+        <h3> Hello <%= username %></h3>
 
-        <h1>Timeline</h1>
-        <ul id="timelineList"></ul>
+        <form method="POST" action="/logout">
+            <input value="Log Out" type="submit">
+        </form>
 
-        <h1>Favorites List</h1>
-        <ul id="favoritesList"></ul>
-        
+        <form method="POST" action="/delete-account">
+            <input value="DELETE ACCOUNT" type="submit" onclick="return confirm('Are you sure? This cannot be undone');">
+        </form>
     </body>
     <!-- Page -->
     <script src="src/pages/home.js"></script>

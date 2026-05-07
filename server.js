@@ -11,7 +11,7 @@ const mongoose = require("mongoose");
 const mongoDbUrl = process.env.MONGODB_URL;
 
 const userSchema = new mongoose.Schema({
-    username: {type: String, unique: true},
+    username: { type: String, unique: true },
     password: String,
 });
 const userModel = mongoose.model("users", userSchema);
@@ -37,15 +37,10 @@ const SECRET = process.env.SECRET;
 
 app.use(
     session({
-        store: new FileStore({
-            path: ".sessions",
-            secret: SECRET,
-            retries: 1,
-        }),
         secret: SECRET,
         resave: false,
         saveUninitialized: true,
-        cookie: {secure: false, maxAge: 1000 * 60 * 60},
+        cookie: { secure: false, maxAge: 1000 * 60 * 60 },
     })
 );
 
@@ -66,7 +61,7 @@ app.get("/", (req, res) => {
 const AUTH_MODES = {
     LOG_IN: "login",
     REGISTER: "register",
-}
+};
 
 app.get("/login", (req, res) => {
     res.render("auth.ejs", { mode: AUTH_MODES.LOG_IN });
@@ -79,7 +74,7 @@ app.get("/register", (req, res) => {
 /* Account */
 app.post("/register", async (req, res) => {
     try {
-        const {username, password} = req.body;
+        const { username, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
         await userModel.create({
             username: username,
@@ -92,8 +87,8 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const {username, password} = req.body;
-    const user = await userModel.findOne({username: username});
+    const { username, password } = req.body;
+    const user = await userModel.findOne({ username: username });
     if (!user) {
         res.send("No username matches");
         return;
@@ -102,12 +97,7 @@ app.post("/login", async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (match) {
         req.session.username = user.username;
-        await addToTimeline(
-            "Login",
-            "User logged in",
-            new Date(),
-            req.session.username
-        );
+        await addToTimeline("Login", "User logged in", new Date(), req.session.username);
         res.redirect("/home");
     } else {
         res.send("Wrong password");
@@ -127,7 +117,7 @@ app.use(isAuthenticated);
 /* REQUIRES AUTHENTICATION BELOW */
 
 app.get("/home", (req, res) => {
-    res.render("home.ejs", {username: req.session.username});
+    res.render("home.ejs", { username: req.session.username });
 });
 
 async function main() {
@@ -151,12 +141,7 @@ app.get("/addToFavorites/:pokemonName", async (req, res) => {
             username: req.session.username,
             pokeName: req.params.pokemonName,
         });
-        addToTimeline(
-            "Added Favorite",
-            req.params.pokemonName,
-            new Date(),
-            req.session.username
-        );
+        addToTimeline("Added Favorite", req.params.pokemonName, new Date(), req.session.username);
         res.json(favoritesFound);
     } catch (error) {
         console.log(error);
@@ -188,3 +173,40 @@ const addToTimeline = async (title, description, date, username) => {
         console.log("db error", error);
     }
 };
+
+app.get("/account", (req, res) => {
+    res.render("account.ejs", { username: req.session.username });
+});
+
+function logoutUser(req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Logout error", err);
+            return res.redirect("/home");
+        }
+        res.clearCookie("connect.sid");
+        res.redirect("/login");
+    });
+}
+
+app.post("/logout", async (req, res) => {
+    logoutUser(req, res);
+});
+
+app.post("/delete-account", async (req, res) => {
+    try {
+        const username = req.session.username;
+        const response = await userModel.deleteOne({ username: username });
+        if (!response) {
+            return res.send("Could not find user in database");
+        }
+
+        await favoritesModel.deleteMany({ username: username });
+        await timelineModel.deleteMany({ username: username });
+
+        logoutUser(req, res);
+    } catch {
+        console.error(error);
+        return res.status(500).send("Error deleting account");
+    }
+});
