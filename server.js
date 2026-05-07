@@ -105,7 +105,7 @@ app.post("/login", async (req, res) => {
 
     const user = await userModel.findOne({ username: username });
     if (!user) {
-        return res.send("No matching user found");
+        return res.json({ message: "No matching user found" });
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -115,7 +115,7 @@ app.post("/login", async (req, res) => {
         await addToTimeline("Login", "User logged in", new Date(), req.session.username);
         return res.redirect("/home");
     } else {
-        return res.send("Invalid credentials");
+        return res.json({ message: "Invalid credentials" });
     }
 });
 
@@ -156,6 +156,22 @@ app.get("/addToFavorites/:pokemonName", async (req, res) => {
         });
         addToTimeline("Added Favorite", req.params.pokemonName, new Date(), req.session.username);
         res.json(favoritesFound);
+    } catch (error) {
+        console.log(error);
+        res.status(403).send("Bad post favorites");
+    }
+});
+
+app.get("/removeFromFavorites/:pokemonName", async (req, res) => {
+    try {
+        const favoriteRemoved = await favoritesModel.deleteOne({
+            username: req.session.username,
+            pokeName: req.params.pokemonName,
+        });
+        addToTimeline("Removed Favorite", req.params.pokemonName, new Date(), req.session.username);
+        res.json({
+            message: `Removed ${req.params.pokemonName} from favorites`,
+        });
     } catch (error) {
         console.log(error);
         res.status(403).send("Bad post favorites");
