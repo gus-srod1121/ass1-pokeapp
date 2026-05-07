@@ -45,12 +45,13 @@ app.use(
         secret: SECRET,
         resave: false,
         saveUninitialized: true,
-        cookie: {secure: true, maxAge: 1000 * 60 * 60},
+        cookie: {secure: false, maxAge: 1000 * 60 * 60},
     })
 );
 
 const PORT = process.env.PORT || 3000;
 
+app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 app.listen(PORT, () => {
@@ -61,7 +62,54 @@ app.get("/", (req, res) => {
     res.redirect("/home");
 });
 
-app.use(express.static("public"));
+const AUTH_MODES = {
+    LOG_IN: "login",
+    REGISTER: "register",
+}
+
+app.get("/login", (req, res) => {
+    res.render("auth.ejs", { mode: AUTH_MODES.LOG_IN });
+});
+
+app.get("/register", (req, res) => {
+    res.render("auth.ejs", { mode: AUTH_MODES.REGISTER });
+});
+
+/* Account */
+app.post("/register", async (req, res) => {
+    try {
+        const {username, password} = req.body;
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        await userModel.create({
+            username: username,
+            password: hashedPassword,
+        });
+        res.status(201).send("User registered");
+    } catch (error) {
+        res.status(400).send("Registration failed");
+    }
+});
+
+app.post("/login", async (req, res) => {
+    const {username, password} = req.body;
+    const user = await userModel.findOne({username: username});
+    const match = await bcrypt.compare(password, user.password);
+
+    if (user && match) {
+        req.session.username = user.username;
+        await addToTimeline(
+            "Login",
+            "User logged in",
+            new Date(),
+            req.session.username
+        );
+        res.redirect("/home");
+    } else if (!user) {
+        res.send("No username matches");
+    } else {
+        res.send("Wrong password");
+    }
+});
 
 app.use(express.urlencoded());
 
@@ -69,11 +117,13 @@ function isAuthenticated(req, res, next) {
     if (req.session.username) {
         next();
     } else {
-        res.redirect("/login.html");
+        res.redirect("/login");
     }
 }
-
 app.use(isAuthenticated);
+
+/* REQUIRES AUTHENTICATION BELOW */
+
 app.get("/home", (req, res) => {
     res.render("home.ejs", {username: req.session.username});
 });
@@ -136,33 +186,3 @@ const addToTimeline = async (title, description, date, username) => {
         console.log("db error", error);
     }
 };
-
-/* Account */
-app.post("/register", async (req, res) => {
-    const {username, password} = req.body;
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    await userModel.create({
-        username: username,
-        password: password,
-    });
-    res.redirect("/");
-});
-
-app.post("/login", async (req, res) => {
-    const {username, password} = req.body;
-    const user = await userModel.findOne({username: username});
-    const match = await bcrypt.compare(password, user.password);
-
-    if (user && match) {
-        req.session.username = user.username;
-        await addToTimeline(
-            "Login",
-            "User logged in",
-            new Date(),
-            req.session.username
-        );
-        res.redirect("/home");
-    } else {
-        res.status(401).send("Invalid credentials");
-    }
-});
