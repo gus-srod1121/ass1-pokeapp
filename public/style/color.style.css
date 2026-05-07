@@ -1,37 +1,50 @@
 :root {
-    /* Light Mode Defaults */
-    /* Background */
+    /* LIGHT MODE */
+
+    /* BACKGROUND */
     --bg-primary: #ffffff;
     --bg-secondary: #f1f5f9;
 
-    /* Text */
+    /* TEXT */
     --text-primary: #1e293b;
     --text-secondary: #64748b;
 
-    /* Buttons */
-    --button-bg-primary: #4f46e5;
-    --button-text-primary: #ffffff;
+    /* BUTTONS */
+    --button-bg-primary: #e3def3;
+    --button-text-primary: #000000;
 
     --button-bg-secondary: #e2e8f0;
     --button-text-secondary: #0f172a;
 
-    --animation-time: 200ms;
+    /* ANCHORS */
+    --anchor-text: #2036b3;
+    --anchor-text-visited: #8b2eef;
+
+    /* OTHER */
     --shadow: rgba(0, 0, 0, 0.3);
 }
 
 :root.dark-mode {
-    /* Dark Mode */
+    /* DARK MODE */
+
+    /* BACKGROUND */
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
-    
+
+    /* TEXT */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
 
-    --button-bg-primary: #6366f1;
+    /* BUTTONS */
+    --button-bg-primary: #4345cd;
     --button-text-primary: #ffffff;
 
     --button-bg-secondary: #334155;
     --button-text-secondary: #f1f5f9;
+
+    /* ANCHORS */
+    --anchor-text: #7885d2;
+    --anchor-text-visited: #ab83d6;
 }
 
 body {
@@ -39,14 +52,26 @@ body {
     color: var(--text-primary);
 }
 
-button {
+button,
+input[type="submit"] {
     background-color: var(--button-bg-primary);
     color: var(--button-text-primary);
 
     border: 2px solid var(--button-text-primary);
-    transition: scale var(--animation-time) ease;
 }
 
-button:hover{
-    scale: 105%;
+button.secondary,
+input[type="submit"].secondary {
+    background-color: var(--button-bg-secondary);
+    color: var(--button-text-secondary);
+
+    border: 2px solid var(--button-text-secondary);
+}
+
+a {
+    color: var(--anchor-text);
+}
+
+a:visited {
+    color: var(--anchor-text-visited);
 }

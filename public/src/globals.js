@@ -8,13 +8,20 @@ function syncTheme() {
         theme = prefersDark ? "dark" : "light";
         localStorage.setItem("theme", theme);
     }
-    const prefersDark = (theme == "dark");
-    
+    const prefersDark = theme == "dark";
+
     document.documentElement.classList.toggle(DARK_MODE_CLASS, prefersDark);
 }
 
 function setup() {
     syncTheme();
+    addEventListener("DOMContentLoaded", () => {
+        console.log("woosh");
+        document.documentElement.style.transition =
+            "background-color var(--animation-time) ease, color var(--animation-time) ease";
+        document.body.style.maxHeight = "20px";
+        console.log("squashie");
+    });
 }
 
 setup();

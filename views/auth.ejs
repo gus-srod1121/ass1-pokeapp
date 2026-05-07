@@ -8,7 +8,6 @@
     <link href="/style/global.style.css" rel="stylesheet">
     <link href="/style/color.style.css" rel="stylesheet">
     <!-- PAGE -->
-    <link href="/style/pages/login.style.css" rel="stylesheet">
 
     <!-- SCRIPTS -->
     <script src="src/globals.js"></script>
@@ -16,7 +15,10 @@
     <title><%= mode == "login" ? "Log In" : "Register" %></title>
 </head>
 <body>
-    <h1><%= mode == "login" ? "Log In" : "Register" %></h1>
+    <%- include("components/navbar") %>
+    <h1>
+        <%= mode == "login" ? "Log In" : "Register" %>
+    </h1>
     <div class="card">
         <form action="<%= mode == 'login' ? '/login' : '/register' %>" method="POST">
             <input name="username" type="text" placeholder="Username" required>

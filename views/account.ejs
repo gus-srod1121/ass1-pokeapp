@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <!-- STYLES -->
-        <link href="style/global.style.css" rel="stylesheet">
-        <link href="style/color.style.css" rel="stylesheet">
+        <link href="style/global.style.css" rel="stylesheet" />
+        <link href="style/color.style.css" rel="stylesheet" />
         <!-- Page -->
-        <link href="style/pages/home.style.css" rel="stylesheet">
+
+        <!-- SCRIPTS -->
+        <script src="src/globals.js"></script>
 
         <title>Home Page</title>
     </head>
@@ -16,16 +18,19 @@
         <%- include("components/navbar") %>
 
         <h1>Account</h1>
-        <h3> Hello <%= username %></h3>
+        <h3>Hello <%= username %></h3>
 
         <form method="POST" action="/logout">
-            <input value="Log Out" type="submit">
+            <input value="Log Out" type="submit" />
         </form>
 
         <form method="POST" action="/delete-account">
-            <input value="DELETE ACCOUNT" type="submit" onclick="return confirm('Are you sure? This cannot be undone');">
+            <input
+                value="DELETE ACCOUNT"
+                type="submit"
+                onclick="return confirm('Are you sure? This cannot be undone');"
+            />
         </form>
     </body>
     <!-- Page -->
-    <script src="src/pages/home.js"></script>
 </html>
