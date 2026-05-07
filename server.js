@@ -37,10 +37,14 @@ const SECRET = process.env.SECRET;
 
 app.use(
     session({
+        store: new FileStore(),
         secret: SECRET,
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: false, maxAge: 1000 * 60 * 60 },
+        resave: true,
+        saveUninitialized: false,
+        cookie: {
+            secure: false,
+            httpOnly: true,
+        },
     })
 );
 
@@ -71,37 +75,47 @@ app.get("/register", (req, res) => {
     res.render("auth.ejs", { mode: AUTH_MODES.REGISTER });
 });
 
+function handleRememberMe(req) {
+    const { rememberMe } = req.body;
+    if (rememberMe) {
+        req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 100;
+    } else {
+        req.session.cookie.maxAge = null;
+    }
+}
+
 /* Account */
 app.post("/register", async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, rememberMe } = req.body;
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
         await userModel.create({
             username: username,
             password: hashedPassword,
         });
-        res.status(201).send("User registered");
+        handleRememberMe(req);
+        return res.redirect("/home");
     } catch (error) {
-        res.status(400).send("Registration failed");
+        return res.status(400).send("Registration failed");
     }
 });
 
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
+
     const user = await userModel.findOne({ username: username });
     if (!user) {
-        res.send("No username matches");
-        return;
+        return res.send("No matching user found");
     }
 
     const match = await bcrypt.compare(password, user.password);
     if (match) {
         req.session.username = user.username;
+        handleRememberMe(req);
         await addToTimeline("Login", "User logged in", new Date(), req.session.username);
-        res.redirect("/home");
+        return res.redirect("/home");
     } else {
-        res.send("Wrong password");
-        return;
+        return res.send("Invalid credentials");
     }
 });
 
@@ -109,11 +123,10 @@ function isAuthenticated(req, res, next) {
     if (req.session.username) {
         next();
     } else {
-        res.redirect("/login");
+        return res.redirect("/login");
     }
 }
 app.use(isAuthenticated);
-
 /* REQUIRES AUTHENTICATION BELOW */
 
 app.get("/home", (req, res) => {
