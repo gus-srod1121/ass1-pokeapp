@@ -20,9 +20,7 @@ addTofavorites = async function (pokemonName) {
     try {
         const result = await fetch(`/addToFavorites/${pokemonName}`);
         const resultJSON = await result.json();
-        // console.log(resultJSON);
-        fetchFavorites();
-        fetchTimelineEvents();
+        refresh();
     } catch (error) {
         console.error("Error adding favorite:", error);
     }
@@ -32,8 +30,7 @@ removeFromFavorites = async function (pokemonName) {
     try {
         const result = await fetch(`/removeFromFavorites/${pokemonName}`);
         const resultJSON = await result.json();
-        fetchFavorites();
-        fetchTimelineEvents();
+        refresh();
     } catch (error) {
         console.error("Error removing favorite:", error);
     }
@@ -76,7 +73,9 @@ const fetchTimelineEvents = async () => {
 };
 
 function refresh() {
-    fetchPokemons();
     fetchFavorites();
     fetchTimelineEvents();
 }
+
+fetchPokemons();
+refresh();

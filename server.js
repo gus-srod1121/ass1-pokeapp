@@ -85,22 +85,8 @@ function handleRememberMe(req) {
 }
 
 /* Account */
-app.post("/register", async (req, res) => {
-    try {
-        const { username, password, rememberMe } = req.body;
-        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-        await userModel.create({
-            username: username,
-            password: hashedPassword,
-        });
-        handleRememberMe(req);
-        return res.redirect("/home");
-    } catch (error) {
-        return res.status(400).send("Registration failed");
-    }
-});
 
-app.post("/login", async (req, res) => {
+async function logInUser(req, res) {
     const { username, password } = req.body;
 
     const user = await userModel.findOne({ username: username });
@@ -117,6 +103,24 @@ app.post("/login", async (req, res) => {
     } else {
         return res.json({ message: "Invalid credentials" });
     }
+}
+
+app.post("/register", async (req, res) => {
+    try {
+        const { username, password, rememberMe } = req.body;
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        await userModel.create({
+            username: username,
+            password: hashedPassword,
+        });
+        return logInUser(req, res);
+    } catch (error) {
+        return res.status(400).send("Registration failed");
+    }
+});
+
+app.post("/login", async (req, res) => {
+    return logInUser(req, res);
 });
 
 function isAuthenticated(req, res, next) {
