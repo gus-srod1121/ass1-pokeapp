@@ -1,22 +1,20 @@
-fetchPokemons = async function () {
-    try {
-        const result = await fetch(`https://pokeapi.co/api/v2/pokemon`);
-        const resultJSON = await result.json();
-        // console.log(resultJSON);
-        for (let i = 0; i < resultJSON.results.length; i++) {
-            const liElement = document.createElement("li");
-            liElement.innerHTML = `
-            ${resultJSON.results[i].name}
-            <button onclick="addTofavorites('${resultJSON.results[i].name}')">Add to favorites</button>
-            `;
-            pokemonList.appendChild(liElement);
-        }
-    } catch (error) {
-        console.error("Error fetching Pokémon:", error);
-    }
-};
+import { fetchPokemonList } from "./../modules/pokemon.js";
 
-addTofavorites = async function (pokemonName) {
+async function displayPokemon() {
+    const pokemon = await fetchPokemonList();
+    const pokemonList = document.getElementById("pokemon-list");
+
+    for (let i = 0; i < pokemon.results.length; i++) {
+        const liElement = document.createElement("li");
+        liElement.innerHTML = `
+            ${pokemon.results[i].name}
+            <button onclick="addToFavorites('${pokemon.results[i].name}')">Add to favorites</button>
+        `;
+        pokemonList.appendChild(liElement);
+    }
+}
+
+async function addToFavorites(pokemonName) {
     try {
         const result = await fetch(`/addToFavorites/${pokemonName}`);
         const resultJSON = await result.json();
@@ -24,9 +22,9 @@ addTofavorites = async function (pokemonName) {
     } catch (error) {
         console.error("Error adding favorite:", error);
     }
-};
+}
 
-removeFromFavorites = async function (pokemonName) {
+async function removeFromFavorites(pokemonName) {
     try {
         const result = await fetch(`/removeFromFavorites/${pokemonName}`);
         const resultJSON = await result.json();
@@ -34,13 +32,14 @@ removeFromFavorites = async function (pokemonName) {
     } catch (error) {
         console.error("Error removing favorite:", error);
     }
-};
+}
 
-fetchFavorites = async function () {
+async function fetchFavorites() {
     try {
         const result = await fetch(`/favorites`);
         const resultJSON = await result.json();
-        console.log(resultJSON);
+        const favoritesList = document.getElementById("favorites-list");
+
         favoritesList.innerHTML = "";
         for (let i = 0; i < resultJSON.length; i++) {
             const liElement = document.createElement("li");
@@ -53,12 +52,14 @@ fetchFavorites = async function () {
     } catch (error) {
         console.error("Error fetching favorites:", error);
     }
-};
+}
 
-const fetchTimelineEvents = async () => {
+async function fetchTimelineEvents() {
     try {
         const result = await fetch(`/timeline`);
         const resultJSON = await result.json();
+        const timelineList = document.getElementById("timeline-list");
+
         timelineList.innerHTML = "";
         for (let i = 0; i < resultJSON.length; i++) {
             const liElement = document.createElement("li");
@@ -70,12 +71,17 @@ const fetchTimelineEvents = async () => {
     } catch (error) {
         console.error("Error fetching timeline:", error);
     }
-};
+}
 
 function refresh() {
     fetchFavorites();
     fetchTimelineEvents();
 }
 
-fetchPokemons();
-refresh();
+function setup() {
+    displayPokemon();
+    refresh();
+    window.addTofavorites
+}
+
+setup();

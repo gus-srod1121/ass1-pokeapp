@@ -15,13 +15,6 @@ function syncTheme() {
 
 function setup() {
     syncTheme();
-    addEventListener("DOMContentLoaded", () => {
-        console.log("woosh");
-        document.documentElement.style.transition =
-            "background-color var(--animation-time) ease, color var(--animation-time) ease";
-        document.body.style.maxHeight = "20px";
-        console.log("squashie");
-    });
 }
 
 setup();
