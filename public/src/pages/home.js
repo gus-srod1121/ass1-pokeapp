@@ -64,7 +64,9 @@ async function fetchTimelineEvents() {
         for (let i = 0; i < resultJSON.length; i++) {
             const liElement = document.createElement("li");
             liElement.innerHTML = `
-                <strong>${resultJSON[i].title}</strong>: ${resultJSON[i].description} <em>${resultJSON[i].date}</em>
+                <strong>${resultJSON[i].title}</strong>: ${resultJSON[i].description}
+                <em>${new Date(resultJSON[i].date)}</em>
+                <button onclick="removeTimelineEvent('${resultJSON[i]._id}')">Delete event</button>
             `;
             timelineList.appendChild(liElement);
         }
@@ -73,15 +75,35 @@ async function fetchTimelineEvents() {
     }
 }
 
+async function removeTimelineEvent(eventId) {
+    try {
+        const result = await fetch(`/removeTimelineEvent/${eventId}`);
+        if (result.ok) {
+            fetchTimelineEvents(); // Refresh just the timeline
+        }
+    } catch (error) {
+        console.error("Error removing event:", error);
+    }
+}
+
 function refresh() {
     fetchFavorites();
     fetchTimelineEvents();
 }
 
-function setup() {
-    displayPokemon();
-    refresh();
-    window.addTofavorites
+function attachFunctionToWindow() {
+    window.addToFavorites = addToFavorites;
+    window.removeFromFavorites = removeFromFavorites;
+    window.removeTimelineEvent = removeTimelineEvent;
 }
+
+function setup() {
+    attachFunctionToWindow();
+    refresh();
+
+    displayPokemon();
+}
+
+/* ATTACH TO WINDOW */
 
 setup();

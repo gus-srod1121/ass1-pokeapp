@@ -182,6 +182,20 @@ app.get("/removeFromFavorites/:pokemonName", async (req, res) => {
     }
 });
 
+app.get("/removeTimelineEvent/:id", async (req, res) => {
+    try {
+        const eventId = req.params.id;
+        await timelineModel.deleteOne({
+            _id: eventId,
+            username: req.session.username
+        });
+        res.json({ message: "Event removed" });
+    } catch (error) {
+        console.error("Delete timeline error:", error);
+        res.status(500).send("Error deleting timeline event");
+    }
+});
+
 app.get("/user-json", async (req, res) => {
     try {
         const user = await userModel.findOne({
