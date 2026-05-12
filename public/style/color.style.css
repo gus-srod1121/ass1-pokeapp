@@ -13,7 +13,7 @@
     --button-bg-primary: #e3def3;
     --button-text-primary: #000000;
 
-    --button-bg-secondary: #e2e8f0;
+    --button-bg-secondary: #b1b6da;
     --button-text-secondary: #0f172a;
 
     /* ANCHORS */
@@ -36,7 +36,7 @@
     --text-secondary: #94a3b8;
 
     /* BUTTONS */
-    --button-bg-primary: #4345cd;
+    --button-bg-primary: #6769cc;
     --button-text-primary: #ffffff;
 
     --button-bg-secondary: #334155;
@@ -74,4 +74,10 @@ a {
 
 a:visited {
     color: var(--anchor-text-visited);
+}
+
+svg {
+    fill: white;
+    stroke: black;
+    stroke-width: 1px;
 }
