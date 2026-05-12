@@ -17,7 +17,7 @@ async function displayPokemon() {
         pokeImg.src = pokemon.sprites.front_default;
         pokeImg.alt = pokemon.name;
 
-        clone.querySelector(".poke-name").innerText = pokemon.name;
+        clone.querySelector(".poke-name").innerText = pokemon.name.toUpperCase();
 
         const typesContainer = clone.querySelector(".poke-types");
         pokemon.types.forEach((type) => {
@@ -131,7 +131,5 @@ function setup() {
     displayPokemon();
     refresh();
 }
-
-/* ATTACH TO WINDOW */
 
 setup();
