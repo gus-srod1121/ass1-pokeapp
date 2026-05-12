@@ -46,3 +46,15 @@
 .fav-button {
     padding: 10px;
 }
+
+.poke-star {
+    fill: white;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+.checked-star {
+    fill: yellow;
+    stroke: black;
+    stroke-width: 1px;
+}

@@ -81,9 +81,3 @@ svg {
     stroke: black;
     stroke-width: 1px;
 }
-
-svg.checked {
-    fill: yellow;
-    stroke: black;
-    stroke-width: 1px;
-}
