@@ -11,13 +11,13 @@ export function createPokemonCard(pokemon, onButtonClick, isFavorite = false) {
     pokeImg.src = pokemon.sprites.front_default;
     pokeImg.alt = pokemon.name;
 
-    clone.querySelector(".poke-name").textContent = pokemon.name.toUpperCase();
+    clone.querySelector(".poke-name").textContent = pokemon.name;
 
     const typesContainer = clone.querySelector(".poke-types");
     pokemon.types.forEach((type) => {
         const div = document.createElement("div");
         div.className = `type ${type.type.name}`;
-        div.textContent = type.type.name;
+        div.innerHTML = `<p>${type.type.name}</p>`;
         typesContainer.appendChild(div);
     });
 

@@ -32,17 +32,21 @@
 
     align-items: center;
     justify-content: center;
-
-    background-color: yellow;
 }
 
 .poke-name {
     font-weight: bold;
-    background-color: cyan;
+    text-transform: uppercase;
 }
 
 .poke-types {
-    background-color: lime;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    padding: 6px;
+    border-radius: 999px;
+    background-color: #c2b8b84b;
 }
 
 .fav-button {
