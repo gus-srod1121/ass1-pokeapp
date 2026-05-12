@@ -1,3 +1,4 @@
+import { createPokemonCard } from "../modules/pokemon-card.js";
 import {
     fetchPokemonDetailsFromName,
     fetchPokemonDetailsFromURL,
@@ -11,30 +12,11 @@ async function displayPokemon() {
     );
 
     const pokemonList = document.getElementById("pokemon-list");
-    const template = document.getElementById("pokemon-card-template");
     pokemonList.innerHTML = "";
 
     for (const pokemon of pokemonDetails) {
-        const clone = template.content.cloneNode(true);
-
-        const pokeImg = clone.querySelector(".poke-img");
-        pokeImg.src = pokemon.sprites.front_default;
-        pokeImg.alt = pokemon.name;
-
-        clone.querySelector(".poke-name").innerText = pokemon.name.toUpperCase();
-
-        const typesContainer = clone.querySelector(".poke-types");
-        pokemon.types.forEach((type) => {
-            const span = document.createElement("span");
-            span.className = `type-badge ${type.type.name}`;
-            span.textContent = type.type.name;
-            typesContainer.appendChild(span);
-        });
-
-        const favButton = clone.querySelector(".fav-button");
-        favButton.onclick = () => addToFavorites(pokemon.name);
-
-        pokemonList.appendChild(clone);
+        const pokeCard = createPokemonCard(pokemon, addToFavorites);
+        pokemonList.appendChild(pokeCard);
     }
 }
 
@@ -72,28 +54,8 @@ async function fetchFavorites() {
         const pokemonDetails = await Promise.all(detailPromises);
 
         for (const pokemon of pokemonDetails) {
-            const clone = template.content.cloneNode(true);
-
-            const pokeImg = clone.querySelector(".poke-img");
-            pokeImg.src = pokemon.sprites.front_default;
-            pokeImg.alt = pokemon.name;
-
-            clone.querySelector(".poke-name").textContent = pokemon.name;
-
-            const typesContainer = clone.querySelector(".poke-types");
-            pokemon.types.forEach((type) => {
-                const span = document.createElement("span");
-                span.className = `type-badge ${type.type.name}`;
-                span.textContent = type.type.name;
-                typesContainer.appendChild(span);
-            });
-
-            const favButton = clone.querySelector(".fav-button");
-            favButton.onclick = () => removeFromFavorites(pokemon.name);
-
-            clone.querySelector(".poke-star").classList.add("checked-star");
-
-            favoritesList.appendChild(clone);
+            const pokeCard = createPokemonCard(pokemon, addToFavorites);
+            favoritesList.appendChild(pokeCard);
         }
     } catch (error) {
         console.error("Error fetching favorites:", error);

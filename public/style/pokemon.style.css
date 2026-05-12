@@ -1,0 +1,79 @@
+/* COLORS TAKEN FROM https://pokemondb.net/type */
+
+.type {
+    padding: 20px;
+
+    color: white;
+}
+
+.normal {
+    background-color: #a9ab96;
+}
+
+.fire {
+    background-color: #ff4421;
+}
+
+.water {
+    background-color: #3199fe;
+}
+
+.electric {
+    background-color: #ffc833;
+}
+
+.grass {
+    background-color: #77cc52;
+}
+
+.ice {
+    background-color: #66cbff;
+}
+
+.fighting {
+    background-color: #b7593e;
+}
+
+.poison {
+    background-color: #a6559f;
+}
+
+.ground {
+    background-color: #e1b95a;
+}
+
+.flying {
+    background-color: #859bfe;
+}
+
+.psychic {
+    background-color: #fd5699;
+}
+
+.bug {
+    background-color: #a8ba23;
+}
+
+.rock {
+    background-color: #bbaa65;
+}
+
+.ghost {
+    background-color: #6963bd;
+}
+
+.dragon {
+    background-color: #7468eb;
+}
+
+.dark {
+    background-color: #765444;
+}
+
+.steel {
+    background-color: #abaaba;
+}
+
+.fairy {
+    background-color: #ee99ed;
+}
