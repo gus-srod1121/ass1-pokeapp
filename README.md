@@ -1,1 +1,1 @@
-# Assignment 1 - Pokemon App
+# Pokemon App
