@@ -1,9 +1,13 @@
-import { fetchPokemonDetails, fetchPokemonList } from "./../modules/pokemon.js";
+import {
+    fetchPokemonDetailsFromName,
+    fetchPokemonDetailsFromURL,
+    fetchPokemonList,
+} from "./../modules/pokemon.js";
 
 async function displayPokemon() {
     const pokemonData = await fetchPokemonList();
     const pokemonDetails = await Promise.all(
-        pokemonData.results.map((p) => fetchPokemonDetails(p.url))
+        pokemonData.results.map((p) => fetchPokemonDetailsFromURL(p.url))
     );
 
     const pokemonList = document.getElementById("pokemon-list");
@@ -28,19 +32,10 @@ async function displayPokemon() {
         });
 
         const favButton = clone.querySelector(".fav-button");
-        favButton.onclick = () => window.addToFavorites(pokemon.name);
+        favButton.onclick = () => addToFavorites(pokemon.name);
 
         pokemonList.appendChild(clone);
     }
-
-    // for (let i = 0; i < pokemon.results.length; i++) {
-    //     const liElement = document.createElement("li");
-    //     liElement.innerHTML = `
-    //         ${pokemon.results[i].name}
-    //         <button onclick="addToFavorites('${pokemon.results[i].name}')">Add to favorites</button>
-    //     `;
-    //     pokemonList.appendChild(liElement);
-    // }
 }
 
 async function addToFavorites(pokemonName) {
@@ -66,17 +61,39 @@ async function removeFromFavorites(pokemonName) {
 async function fetchFavorites() {
     try {
         const result = await fetch(`/favorites`);
-        const resultJSON = await result.json();
+        const favoritesData = await result.json();
+
+        const template = document.getElementById("pokemon-card-template");
         const favoritesList = document.getElementById("favorites-list");
 
         favoritesList.innerHTML = "";
-        for (let i = 0; i < resultJSON.length; i++) {
-            const liElement = document.createElement("li");
-            liElement.innerHTML = `
-            <p>${resultJSON[i].pokeName}</p>
-            <button onclick="removeFromFavorites('${resultJSON[i].pokeName}')">Remove to favorites</button>
-            `;
-            favoritesList.appendChild(liElement);
+
+        const detailPromises = favoritesData.map((fav) => fetchPokemonDetailsFromName(fav.pokeName));
+        const pokemonDetails = await Promise.all(detailPromises);
+
+        for (const pokemon of pokemonDetails) {
+            const clone = template.content.cloneNode(true);
+
+            const pokeImg = clone.querySelector(".poke-img");
+            pokeImg.src = pokemon.sprites.front_default;
+            pokeImg.alt = pokemon.name;
+
+            clone.querySelector(".poke-name").textContent = pokemon.name;
+
+            const typesContainer = clone.querySelector(".poke-types");
+            pokemon.types.forEach((type) => {
+                const span = document.createElement("span");
+                span.className = `type-badge ${type.type.name}`;
+                span.textContent = type.type.name;
+                typesContainer.appendChild(span);
+            });
+
+            const favButton = clone.querySelector(".fav-button");
+            favButton.onclick = () => removeFromFavorites(pokemon.name);
+
+            clone.querySelector(".poke-star").classList.add("checked-star");
+
+            favoritesList.appendChild(clone);
         }
     } catch (error) {
         console.error("Error fetching favorites:", error);
@@ -121,8 +138,6 @@ function refresh() {
 }
 
 function attachFunctionToWindow() {
-    window.addToFavorites = addToFavorites;
-    window.removeFromFavorites = removeFromFavorites;
     window.removeTimelineEvent = removeTimelineEvent;
 }
 
