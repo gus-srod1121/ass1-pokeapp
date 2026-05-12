@@ -1,17 +1,46 @@
-import { fetchPokemonList } from "./../modules/pokemon.js";
+import { fetchPokemonDetails, fetchPokemonList } from "./../modules/pokemon.js";
 
 async function displayPokemon() {
-    const pokemon = await fetchPokemonList();
-    const pokemonList = document.getElementById("pokemon-list");
+    const pokemonData = await fetchPokemonList();
+    const pokemonDetails = await Promise.all(
+        pokemonData.results.map((p) => fetchPokemonDetails(p.url))
+    );
 
-    for (let i = 0; i < pokemon.results.length; i++) {
-        const liElement = document.createElement("li");
-        liElement.innerHTML = `
-            ${pokemon.results[i].name}
-            <button onclick="addToFavorites('${pokemon.results[i].name}')">Add to favorites</button>
-        `;
-        pokemonList.appendChild(liElement);
+    const pokemonList = document.getElementById("pokemon-list");
+    const template = document.getElementById("pokemon-card-template");
+    pokemonList.innerHTML = "";
+
+    for (const pokemon of pokemonDetails) {
+        const clone = template.content.cloneNode(true);
+
+        const pokeImg = clone.querySelector(".poke-img");
+        pokeImg.src = pokemon.sprites.front_default;
+        pokeImg.alt = pokemon.name;
+
+        clone.querySelector(".poke-name").innerText = pokemon.name;
+
+        const typesContainer = clone.querySelector(".poke-types");
+        pokemon.types.forEach((type) => {
+            const span = document.createElement("span");
+            span.className = `type-badge ${type.type.name}`;
+            span.textContent = type.type.name;
+            typesContainer.appendChild(span);
+        });
+
+        const favButton = clone.querySelector(".fav-button");
+        favButton.onclick = () => window.addToFavorites(pokemon.name);
+
+        pokemonList.appendChild(clone);
     }
+
+    // for (let i = 0; i < pokemon.results.length; i++) {
+    //     const liElement = document.createElement("li");
+    //     liElement.innerHTML = `
+    //         ${pokemon.results[i].name}
+    //         <button onclick="addToFavorites('${pokemon.results[i].name}')">Add to favorites</button>
+    //     `;
+    //     pokemonList.appendChild(liElement);
+    // }
 }
 
 async function addToFavorites(pokemonName) {
@@ -99,9 +128,8 @@ function attachFunctionToWindow() {
 
 function setup() {
     attachFunctionToWindow();
-    refresh();
-
     displayPokemon();
+    refresh();
 }
 
 /* ATTACH TO WINDOW */
