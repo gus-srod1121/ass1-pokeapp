@@ -54,7 +54,7 @@ async function fetchFavorites() {
         const pokemonDetails = await Promise.all(detailPromises);
 
         for (const pokemon of pokemonDetails) {
-            const pokeCard = createPokemonCard(pokemon, addToFavorites);
+            const pokeCard = createPokemonCard(pokemon, addToFavorites, true);
             favoritesList.appendChild(pokeCard);
         }
     } catch (error) {

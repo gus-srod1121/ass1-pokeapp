@@ -54,13 +54,13 @@
 }
 
 .poke-star {
-    fill: white;
+    fill: white !important;
     stroke: black;
     stroke-width: 1px;
 }
 
 .checked-star {
-    fill: yellow;
+    fill: yellow !important;
     stroke: black;
     stroke-width: 1px;
 }
