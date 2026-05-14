@@ -35,11 +35,19 @@
             </form>
             <form method="POST" action="/delete-account">
                 <input
+                    class="<%= isAdmin ? 'button-disabled' : 'none' %>"
                     value="DELETE ACCOUNT"
                     type="submit"
                     onclick="return confirm('Are you sure? This cannot be undone');"
+                    <% if (isAdmin) { %>
+                        disabled
+                    <% } %>
                 />
             </form>
+            
+            <% if (isAdmin) { %>
+                <p>Admins cannot delete their own account</p>
+            <% } %>
         </ul>
     </body>
     <!-- Page -->

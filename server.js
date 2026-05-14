@@ -275,17 +275,15 @@ app.post("/delete-account", async (req, res) => {
 });
 
 function isAdmin(req, res, next) {
-    if (req.session.username) {
-        userModel.findOne({ username: req.session.username }).then((user) => {
-            if (user && user.isAdmin) {
-                return next();
-            }
-        });
+    const user = await userModel.findOne({ username: req.session.username });
+    if (user) {
+        return user.isAdmin ? next() : res.status(403).send("Admins only");
     } else {
-        res.redirect("/login");
+        return res.status(401).send("Who are you?");
     }
 }
 
+app.use(isAdmin);
 app.get("/admin", async (req, res) => {
     try {
         const allUsers = await userModel.find({});
