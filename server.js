@@ -284,16 +284,26 @@ async function isAdmin(req, res, next) {
     }
 }
 
-
 /* ADMIN ROLE REQUIRED BELOW */
 app.use(isAdmin);
 
 app.get("/admin", async (req, res) => {
     try {
-        const allUsers = await userModel.find({});
-        res.render("admin.ejs", { users: allUsers, username: req.session.username });
+        res.render("admin.ejs", { username: req.session.username });
     } catch (error) {
         res.status(500).send("Error loading admin");
+    }
+});
+
+app.get("/admin/userData", async (req, res) => {
+    try {
+        const allUsers = await userModel.find({});
+        res.json({
+            users: allUsers,
+            currentUser: req.session.username,
+        });
+    } catch (error) {
+        res.status(500).send("Failed to fetch users");
     }
 });
 
@@ -310,7 +320,7 @@ app.post("/admin/update-user", isAdmin, async (req, res) => {
 
 app.post("/admin/delete-user", isAdmin, async (req, res) => {
     const { targetUsername } = req.body;
-    
+
     if (targetUsername != req.session.username) {
         await userModel.deleteOne({ username: targetUsername });
         await favoritesModel.deleteMany({ username: targetUsername });

@@ -65,7 +65,7 @@ input[type="submit"] {
     transition: transform var(--animation-time) ease;
 }
 
-.button-disabled {
+button:disabled {
     transform: translateY(0px) !important;
 }
 
