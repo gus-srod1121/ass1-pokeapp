@@ -7,7 +7,7 @@ import {
 
 let allPokemonRefs = [];
 let filteredPokemonRefs = [];
-let selectedTypes = []; 
+let selectedTypes = [];
 let currentOffset = 0;
 const limit = 10;
 
@@ -45,19 +45,19 @@ async function fetchPokemon() {
     nextButton.disabled = currentOffset + limit >= filteredPokemonRefs.length;
 }
 
-// --- TYPE FILTERING LOGIC ---
-
 async function populateTypeFilter() {
     try {
         const response = await fetch("https://pokeapi.co/api/v2/type");
         const data = await response.json();
-        data.results.filter(t => t.name !== 'shadow' && t.name !== 'unknown').forEach(type => {
-            const btn = document.createElement("button");
-            btn.classList.add("type-chip");
-            btn.textContent = type.name;
-            btn.onclick = () => toggleType(type.name, btn);
-            typeFilterContainer.appendChild(btn);
-        });
+        data.results
+            .filter((t) => t.name !== "shadow" && t.name !== "unknown")
+            .forEach((type) => {
+                const btn = document.createElement("button");
+                btn.classList.add("type-chip");
+                btn.textContent = type.name;
+                btn.onclick = () => toggleType(type.name, btn);
+                typeFilterContainer.appendChild(btn);
+            });
     } catch (error) {
         console.error("Error populating types:", error);
     }
@@ -65,7 +65,7 @@ async function populateTypeFilter() {
 
 function toggleType(typeName, element) {
     if (selectedTypes.includes(typeName)) {
-        selectedTypes = selectedTypes.filter(t => t !== typeName);
+        selectedTypes = selectedTypes.filter((t) => t !== typeName);
         element.classList.remove("active");
     } else {
         selectedTypes.push(typeName);
@@ -81,24 +81,24 @@ async function handleFilters() {
         filteredPokemonRefs = allPokemonRefs.filter((p) => p.name.includes(term));
     } else {
         const typeData = await Promise.all(
-            selectedTypes.map(t => fetch(`https://pokeapi.co/api/v2/type/${t}`).then(r => r.json()))
+            selectedTypes.map((t) =>
+                fetch(`https://pokeapi.co/api/v2/type/${t}`).then((r) => r.json())
+            )
         );
 
-        let intersection = typeData[0].pokemon.map(p => p.pokemon);
+        let intersection = typeData[0].pokemon.map((p) => p.pokemon);
 
         for (let i = 1; i < typeData.length; i++) {
-            const currentTypeNames = typeData[i].pokemon.map(p => p.pokemon.name);
-            intersection = intersection.filter(p => currentTypeNames.includes(p.name));
+            const currentTypeNames = typeData[i].pokemon.map((p) => p.pokemon.name);
+            intersection = intersection.filter((p) => currentTypeNames.includes(p.name));
         }
 
-        filteredPokemonRefs = intersection.filter(p => p.name.includes(term));
+        filteredPokemonRefs = intersection.filter((p) => p.name.includes(term));
     }
 
     currentOffset = 0;
     fetchPokemon();
 }
-
-// --- DATABASE ACTIONS ---
 
 async function addToFavorites(pokemonName) {
     try {
@@ -182,7 +182,6 @@ function attachFunctionToWindow() {
 
 function setUpEventListeners() {
     try {
-        // --- NEW: Toggle Logic ---
         filtersButton.onclick = () => {
             typeFilterContainer.classList.toggle("hidden");
             // Change button text based on state
@@ -211,7 +210,7 @@ function setUpEventListeners() {
 
 async function setup() {
     await populateTypeFilter();
-    
+
     const data = await fetchPokemonList(5000, 0);
     allPokemonRefs = data.results;
     filteredPokemonRefs = allPokemonRefs;
