@@ -274,21 +274,49 @@ app.post("/delete-account", async (req, res) => {
     }
 });
 
-function isAdmin(req, res, next) {
-    const user = userModel.findOne({ username: req.session.username });
+async function isAdmin(req, res, next) {
+    const user = await userModel.findOne({ username: req.session.username });
     if (user) {
+        console.log(user.isAdmin);
         return user.isAdmin ? next() : res.status(403).send("Admins only");
     } else {
         return res.status(401).send("Who are you?");
     }
 }
 
+
+/* ADMIN ROLE REQUIRED BELOW */
 app.use(isAdmin);
+
 app.get("/admin", async (req, res) => {
     try {
         const allUsers = await userModel.find({});
-        res.render("admin.ejs", { users: allUsers });
+        res.render("admin.ejs", { users: allUsers, username: req.session.username });
     } catch (error) {
         res.status(500).send("Error loading admin");
     }
+});
+
+app.post("/admin/update-user", isAdmin, async (req, res) => {
+    const { targetUsername, newUsername, makeAdmin } = req.body;
+    const adminStatus = makeAdmin == "on";
+
+    await userModel.updateOne(
+        { username: targetUsername },
+        { $set: { username: newUsername, isAdmin: adminStatus } }
+    );
+    res.redirect("/admin");
+});
+
+app.post("/admin/delete-user", isAdmin, async (req, res) => {
+    const { targetUsername } = req.body;
+    
+    if (targetUsername != req.session.username) {
+        await userModel.deleteOne({ username: targetUsername });
+        await favoritesModel.deleteMany({ username: targetUsername });
+        await timelineModel.deleteMany({ username: targetUsername });
+    } else {
+        console.log("You cannot delete yourself!");
+    }
+    res.redirect("/admin");
 });
