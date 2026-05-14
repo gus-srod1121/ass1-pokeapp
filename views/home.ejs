@@ -18,26 +18,23 @@
     <body class="">
         <%- include("components/navbar") %>
 
-        <h1>Pokemon List</h1>
-
-        <div id="pagination-controls">
-            <input type="text" id="search-input" placeholder="Search pokemon">
-            <div class="button-row">
-                <button id="prev-button"><</button>
-                <span id="page-num">Page 1</span>
-                <button id="next-button">></button>
+        <main>
+            <h1>Pokemon List</h1>
+            <div id="pagination-controls">
+                <input type="text" id="search-input" placeholder="Search pokemon">
+                <div class="button-row">
+                    <button id="prev-button"><</button>
+                    <span id="page-num">Page 1</span>
+                    <button id="next-button">></button>
+                </div>
             </div>
-        </div>
-
-        <ul id="pokemon-list"></ul>
-
-        <h1>Timeline</h1>
-        <ul id="timeline-list"></ul>
-
-        <h1>Favorites List</h1>
-        <ul id="favorites-list"></ul>
-
-        <%- include("components/pokemon-card") %>
+            <ul id="pokemon-list"></ul>
+            <h1>Timeline</h1>
+            <ul id="timeline-list"></ul>
+            <h1>Favorites List</h1>
+            <ul id="favorites-list"></ul>
+            <%- include("components/pokemon-card") %>
+        </main>
     </body>
     <!-- GLOBALS -->
     <script src="src/modules/pokemon.js" type="module"></script>

@@ -17,38 +17,39 @@
     </head>
     <body class="">
         <%- include("components/navbar") %>
-
-        <h1>Account</h1>
-        <div class="flex" style="justify-content: center">
-            <h3>Hello <%= username %></h3>
-        </div>
-
-        <div class="button-group">
-            <% if (isAdmin) { %>
-                <button onclick="window.location.href = '/admin'">Admin Dashboard</button>
-            <% } %>
-        </div>
-
-        <ul>
-            <form method="POST" action="/logout">
-                <input value="Log Out" type="submit" />
-            </form>
-            <form method="POST" action="/delete-account" style="display: flex; flex-direction: column; gap: 0px;">
-                <input
-                    class="<%= isAdmin ? 'button-disabled' : 'none' %>"
-                    value="DELETE ACCOUNT"
-                    type="submit"
-                    onclick="return confirm('Are you sure? This cannot be undone');"
-                    <% if (isAdmin) { %>
-                        disabled
-                    <% } %>
-                />
-            
+        <main>
+            <h1>Account</h1>
+            <div class="flex" style="justify-content: center">
+                <h3>Hello <%= username %></h3>
+            </div>
+    
+            <div class="button-group">
                 <% if (isAdmin) { %>
-                    <p style="font-size: 14px;">(Admins cannot delete their own account)</p>
+                    <button onclick="window.location.href = '/admin'">Admin Dashboard</button>
                 <% } %>
-            </form>
-        </ul>
+            </div>
+    
+            <ul>
+                <form method="POST" action="/logout">
+                    <input value="Log Out" type="submit" />
+                </form>
+                <form method="POST" action="/delete-account" style="display: flex; flex-direction: column; gap: 0px;">
+                    <input
+                        class="<%= isAdmin ? 'button-disabled' : 'none' %>"
+                        value="DELETE ACCOUNT"
+                        type="submit"
+                        onclick="return confirm('Are you sure? This cannot be undone');"
+                        <% if (isAdmin) { %>
+                            disabled
+                        <% } %>
+                    />
+    
+                    <% if (isAdmin) { %>
+                        <p style="font-size: 14px;">(Admins cannot delete their own account)</p>
+                    <% } %>
+                </form>
+            </ul>
+        </main>
     </body>
     <!-- Page -->
 </html>
