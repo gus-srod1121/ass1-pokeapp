@@ -27,7 +27,7 @@ async function fetchPokemon() {
     );
 
     pokemonList.innerHTML = "";
-    if (pokemonDetails.length === 0) {
+    if (pokemonDetails.length == 0) {
         pokemonList.innerHTML = "<li>No Pokémon found.</li>";
     }
 
@@ -102,7 +102,7 @@ async function fetchTimelineEvents() {
                 <em>${new Date(resultJSON[i].date)}</em>
                 <button onclick="removeTimelineEvent('${resultJSON[i]._id}')">Delete event</button>
             `;
-            timelineList.appendChild(liElement);
+            timelineList.prepend(liElement);
         }
     } catch (error) {
         console.error("Error fetching timeline:", error);
@@ -136,7 +136,7 @@ function setUpEventListeners() {
             const term = e.target.value.toLowerCase();
             filteredPokemonRefs = allPokemonRefs.filter((p) => p.name.includes(term));
             currentOffset = 0;
-            fetchPokemon(); // Changed from displayPokemon to fetchPokemon
+            fetchPokemon();
         });
 
         prevButton.onclick = () => {
@@ -158,7 +158,7 @@ function setUpEventListeners() {
 }
 
 async function setup() {
-    const data = await fetchPokemonList(2000, 0);
+    const data = await fetchPokemonList(5000, 0);
     allPokemonRefs = data.results;
     filteredPokemonRefs = allPokemonRefs;
 
