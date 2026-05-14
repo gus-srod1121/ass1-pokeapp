@@ -13,6 +13,7 @@ const mongoDbUrl = process.env.MONGODB_URL;
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true },
     password: String,
+    isAdmin: { type: Boolean, default: false },
 });
 const userModel = mongoose.model("users", userSchema);
 
@@ -187,7 +188,7 @@ app.get("/removeTimelineEvent/:id", async (req, res) => {
         const eventId = req.params.id;
         await timelineModel.deleteOne({
             _id: eventId,
-            username: req.session.username
+            username: req.session.username,
         });
         res.json({ message: "Event removed" });
     } catch (error) {
@@ -232,8 +233,12 @@ const addToTimeline = async (title, description, date, username) => {
     }
 };
 
-app.get("/account", (req, res) => {
-    res.render("account.ejs", { username: req.session.username });
+app.get("/account", async (req, res) => {
+    const user = await userModel.findOne({ username: req.session.username });
+    res.render("account.ejs", {
+        username: req.session.username,
+        isAdmin: user ? user.isAdmin : false,
+    });
 });
 
 function logoutUser(req, res) {
@@ -266,5 +271,26 @@ app.post("/delete-account", async (req, res) => {
     } catch {
         console.error(error);
         return res.status(500).send("Error deleting account");
+    }
+});
+
+function isAdmin(req, res, next) {
+    if (req.session.username) {
+        userModel.findOne({ username: req.session.username }).then((user) => {
+            if (user && user.isAdmin) {
+                return next();
+            }
+        });
+    } else {
+        res.redirect("/login");
+    }
+}
+
+app.get("/admin", async (req, res) => {
+    try {
+        const allUsers = await userModel.find({});
+        res.render("admin.ejs", { users: allUsers });
+    } catch (error) {
+        res.status(500).send("Error loading admin");
     }
 });
