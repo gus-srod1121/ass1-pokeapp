@@ -20,6 +20,7 @@
     border: 1px solid;
     border-radius: 999px;
 
+    width: 100%;
     padding: 16px 32px;
 }
 
@@ -46,4 +47,28 @@
     font-weight: bolder;
 
     padding: 20px;
+}
+
+.type-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.type-chip {
+    padding: 6px 12px;
+    border: 1px solid var(--button-bg-secondary);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: capitalize;
+}
+
+.type-chip.active {
+    background: var(--button-bg-primary); /* Your favorite #f43f5e color! */
+    color: white;
+    border-color: var(--button-bg-primary);
 }

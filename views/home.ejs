@@ -7,6 +7,7 @@
         <!-- STYLES -->
         <link href="style/global.style.css" rel="stylesheet" />
         <link href="style/color.style.css" rel="stylesheet" />
+        <link href="style/util.style.css" rel="stylesheet" />
         <!-- PAGE -->
         <link href="style/pages/home.style.css" rel="stylesheet" />
 
@@ -21,7 +22,13 @@
         <main>
             <h1>Pokemon List</h1>
             <div id="pagination-controls">
-                <input type="text" id="search-input" placeholder="Search pokemon">
+                <div class="flex-row">
+                    <input type="text" id="search-input" placeholder="Search pokemon" />
+                    <button id="filters-button" class="filter-toggle">Filters</button>
+                </div>
+
+                <div id="type-filter-container" class="type-chips hidden"></div>
+
                 <div class="button-row">
                     <button id="prev-button"><</button>
                     <span id="page-num">Page 1</span>

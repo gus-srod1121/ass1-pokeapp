@@ -7,19 +7,20 @@ import {
 
 let allPokemonRefs = [];
 let filteredPokemonRefs = [];
+let selectedTypes = []; 
 let currentOffset = 0;
 const limit = 10;
 
 const pokemonList = document.getElementById("pokemon-list");
-
 const searchInput = document.getElementById("search-input");
 const prevButton = document.getElementById("prev-button");
 const pageInfo = document.getElementById("page-num");
 const nextButton = document.getElementById("next-button");
+const typeFilterContainer = document.getElementById("type-filter-container");
+const filtersButton = document.getElementById("filters-button"); // Added for toggle
 
 async function fetchPokemon() {
     pokemonList.innerHTML = "<li>Loading Pokémon...</li>";
-
     const pageItems = filteredPokemonRefs.slice(currentOffset, currentOffset + limit);
 
     const pokemonDetails = await Promise.all(
@@ -44,10 +45,64 @@ async function fetchPokemon() {
     nextButton.disabled = currentOffset + limit >= filteredPokemonRefs.length;
 }
 
+// --- TYPE FILTERING LOGIC ---
+
+async function populateTypeFilter() {
+    try {
+        const response = await fetch("https://pokeapi.co/api/v2/type");
+        const data = await response.json();
+        data.results.filter(t => t.name !== 'shadow' && t.name !== 'unknown').forEach(type => {
+            const btn = document.createElement("button");
+            btn.classList.add("type-chip");
+            btn.textContent = type.name;
+            btn.onclick = () => toggleType(type.name, btn);
+            typeFilterContainer.appendChild(btn);
+        });
+    } catch (error) {
+        console.error("Error populating types:", error);
+    }
+}
+
+function toggleType(typeName, element) {
+    if (selectedTypes.includes(typeName)) {
+        selectedTypes = selectedTypes.filter(t => t !== typeName);
+        element.classList.remove("active");
+    } else {
+        selectedTypes.push(typeName);
+        element.classList.add("active");
+    }
+    handleFilters();
+}
+
+async function handleFilters() {
+    const term = searchInput.value.toLowerCase();
+
+    if (selectedTypes.length === 0) {
+        filteredPokemonRefs = allPokemonRefs.filter((p) => p.name.includes(term));
+    } else {
+        const typeData = await Promise.all(
+            selectedTypes.map(t => fetch(`https://pokeapi.co/api/v2/type/${t}`).then(r => r.json()))
+        );
+
+        let intersection = typeData[0].pokemon.map(p => p.pokemon);
+
+        for (let i = 1; i < typeData.length; i++) {
+            const currentTypeNames = typeData[i].pokemon.map(p => p.pokemon.name);
+            intersection = intersection.filter(p => currentTypeNames.includes(p.name));
+        }
+
+        filteredPokemonRefs = intersection.filter(p => p.name.includes(term));
+    }
+
+    currentOffset = 0;
+    fetchPokemon();
+}
+
+// --- DATABASE ACTIONS ---
+
 async function addToFavorites(pokemonName) {
     try {
-        const result = await fetch(`/addToFavorites/${pokemonName}`);
-        const resultJSON = await result.json();
+        await fetch(`/addToFavorites/${pokemonName}`);
         refresh();
     } catch (error) {
         console.error("Error adding favorite:", error);
@@ -56,8 +111,7 @@ async function addToFavorites(pokemonName) {
 
 async function removeFromFavorites(pokemonName) {
     try {
-        const result = await fetch(`/removeFromFavorites/${pokemonName}`);
-        const resultJSON = await result.json();
+        await fetch(`/removeFromFavorites/${pokemonName}`);
         refresh();
     } catch (error) {
         console.error("Error removing favorite:", error);
@@ -68,10 +122,7 @@ async function fetchFavorites() {
     try {
         const result = await fetch(`/favorites`);
         const favoritesData = await result.json();
-
-        const template = document.getElementById("pokemon-card-template");
         const favoritesList = document.getElementById("favorites-list");
-
         favoritesList.innerHTML = "";
 
         const detailPromises = favoritesData.map((fav) =>
@@ -93,7 +144,6 @@ async function fetchTimelineEvents() {
         const result = await fetch(`/timeline`);
         const resultJSON = await result.json();
         const timelineList = document.getElementById("timeline-list");
-
         timelineList.innerHTML = "";
         for (let i = 0; i < resultJSON.length; i++) {
             const liElement = document.createElement("li");
@@ -113,7 +163,7 @@ async function removeTimelineEvent(eventId) {
     try {
         const result = await fetch(`/removeTimelineEvent/${eventId}`);
         if (result.ok) {
-            fetchTimelineEvents(); // Refresh just the timeline
+            fetchTimelineEvents();
         }
     } catch (error) {
         console.error("Error removing event:", error);
@@ -132,12 +182,14 @@ function attachFunctionToWindow() {
 
 function setUpEventListeners() {
     try {
-        searchInput.addEventListener("input", (e) => {
-            const term = e.target.value.toLowerCase();
-            filteredPokemonRefs = allPokemonRefs.filter((p) => p.name.includes(term));
-            currentOffset = 0;
-            fetchPokemon();
-        });
+        // --- NEW: Toggle Logic ---
+        filtersButton.onclick = () => {
+            typeFilterContainer.classList.toggle("hidden");
+            // Change button text based on state
+            const isHidden = typeFilterContainer.classList.contains("hidden");
+        };
+
+        searchInput.addEventListener("input", handleFilters);
 
         prevButton.onclick = () => {
             if (currentOffset >= limit) {
@@ -158,6 +210,8 @@ function setUpEventListeners() {
 }
 
 async function setup() {
+    await populateTypeFilter();
+    
     const data = await fetchPokemonList(5000, 0);
     allPokemonRefs = data.results;
     filteredPokemonRefs = allPokemonRefs;
