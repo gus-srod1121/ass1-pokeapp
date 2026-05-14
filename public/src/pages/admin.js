@@ -75,7 +75,10 @@ async function toggleAdminRole(username, currentStatus) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `targetUsername=${username}&newUsername=${username}&makeAdmin=${currentStatus ? "off" : "on"}`,
     });
-    if (response.ok) window.location.reload();
+    if (response.ok) {
+        console.log("RELOADING");
+        window.location.reload();
+    }
 }
 
 async function deleteUser(username) {

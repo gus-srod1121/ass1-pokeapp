@@ -49,6 +49,7 @@ app.use(
     })
 );
 
+app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -277,7 +278,6 @@ app.post("/delete-account", async (req, res) => {
 async function isAdmin(req, res, next) {
     const user = await userModel.findOne({ username: req.session.username });
     if (user) {
-        console.log(user.isAdmin);
         return user.isAdmin ? next() : res.status(403).send("Admins only");
     } else {
         return res.status(401).send("Who are you?");
@@ -330,7 +330,7 @@ app.post("/admin/update-user", isAdmin, async (req, res) => {
         await favoritesModel.updateMany({ username: targetUsername }, { username: newUsername });
         await timelineModel.updateMany({ username: targetUsername }, { username: newUsername });
 
-        res.status(200);
+        res.sendStatus(200);
     } catch (error) {
         console.error(error);
     }
