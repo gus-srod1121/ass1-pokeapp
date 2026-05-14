@@ -1,6 +1,9 @@
 :root {
     --animation-time: 200ms;
 
+    --default-max-width: 1280px;
+    --default-padding: 2vw 2vh;
+
     font-size: 18px;
 }
 
@@ -10,7 +13,6 @@
 
 body {
     margin: auto;
-    max-width: 1280px;
 
     font-family:
         system-ui,
@@ -29,7 +31,9 @@ body {
 }
 
 header, main {
-    padding: 2vw 2vh;
+    padding: var(--default-padding);
+    max-width: var(--default-max-width);
+    margin: 0px auto;
 }
 
 button, input, select, textarea {
