@@ -8,6 +8,7 @@
         <link href="style/global.style.css" rel="stylesheet" />
         <link href="style/color.style.css" rel="stylesheet" />
         <!-- Page -->
+        <link href="style/pages/account.style.css" rel="stylesheet" />
 
         <!-- SCRIPTS -->
         <script src="src/globals.js"></script>
@@ -22,12 +23,13 @@
             <h3>Hello <%= username %></h3>
         </div>
 
-        <ul>
+        <div class="button-group">
             <% if (isAdmin) { %>
-                <div>
-                    <button onclick="window.location.href = '/admin';">Admin Dashboard</button>
-                </div>
+                <button onclick="window.location.href = '/admin'">Admin Dashboard</button>
             <% } %>
+        </div>
+
+        <ul>
             <form method="POST" action="/logout">
                 <input value="Log Out" type="submit" />
             </form>
