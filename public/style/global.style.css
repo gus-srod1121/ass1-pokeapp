@@ -4,10 +4,6 @@
     font-size: 18px;
 }
 
-form * {
-    font-size: 18px;
-}
-
 * {
     box-sizing: border-box;
 }
@@ -31,6 +27,11 @@ body {
         sans-serif;
 
     line-height: 1.5;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
 }
 
 input {
