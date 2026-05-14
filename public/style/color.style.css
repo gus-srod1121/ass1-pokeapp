@@ -1,18 +1,20 @@
 :root {
-    /* LIGHT MODE *//* BACKGROUND */
-    --bg-primary: #ffffff;
-    --bg-secondary: #effcff;
+    /* LIGHT MODE */
 
-    /* TEXT */
-    --text-primary: #000000;
-    --text-secondary: #2c2393;
+    /* BACKGROUND */
+    --bg-primary: #fffcfb; /* Warm paper white */
+    --bg-secondary: #ddfbf5; /* Soft Mint/Sage tint */
+
+    /* TEXT *//* TEXT */
+    --text-primary: #000000; /* Very dark forest green */
+    --text-secondary: #64748b; /* Neutral Slate */
 
     /* BUTTONS */
     --button-bg-primary: #f43f5e;
     --button-text-primary: #ffffff;
 
-    --button-bg-secondary: #e0e7ff;
-    --button-text-secondary: #312e81;
+    --button-bg-secondary: #d1fae5; /* Pale Mint */
+    --button-text-secondary: #065f46; /* Deep Emerald */
 
     /* ANCHORS */
     --anchor-text: #4338ca;
@@ -34,7 +36,7 @@
     --text-secondary: #94a3b8;
 
     /* BUTTONS */
-    --button-bg-primary: #4e4f9f;
+    --button-bg-primary: #f43f5e;
     --button-text-primary: #ffffff;
 
     --button-bg-secondary: #647081;
@@ -56,6 +58,8 @@
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
+
+    border-color: var(--text-primary);
 }
 
 button,
@@ -63,7 +67,8 @@ input[type="submit"] {
     background-color: var(--button-bg-primary);
     color: var(--button-text-primary);
 
-    border: 2px solid var(--button-text-primary);
+    border: 2px solid var(--text-primary);
+    font-weight: 600;
 }
 
 button.secondary,
@@ -71,7 +76,7 @@ input[type="submit"].secondary {
     background-color: var(--button-bg-secondary);
     color: var(--button-text-secondary);
 
-    border: 2px solid var(--button-text-secondary);
+    border: 2px solid var(--text-secondary);
 }
 
 button:disabled {
