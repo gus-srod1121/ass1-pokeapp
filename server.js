@@ -275,7 +275,7 @@ app.post("/delete-account", async (req, res) => {
 });
 
 function isAdmin(req, res, next) {
-    const user = await userModel.findOne({ username: req.session.username });
+    const user = userModel.findOne({ username: req.session.username });
     if (user) {
         return user.isAdmin ? next() : res.status(403).send("Admins only");
     } else {

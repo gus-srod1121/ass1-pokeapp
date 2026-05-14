@@ -65,6 +65,10 @@ input[type="submit"] {
     transition: transform var(--animation-time) ease;
 }
 
+.button-disabled {
+    transform: translateY(0px) !important;
+}
+
 button {
     padding: 1vh 4vw;
 }

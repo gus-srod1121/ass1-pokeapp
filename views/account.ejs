@@ -33,7 +33,7 @@
             <form method="POST" action="/logout">
                 <input value="Log Out" type="submit" />
             </form>
-            <form method="POST" action="/delete-account">
+            <form method="POST" action="/delete-account" style="display: flex; flex-direction: column; gap: 0px;">
                 <input
                     class="<%= isAdmin ? 'button-disabled' : 'none' %>"
                     value="DELETE ACCOUNT"
@@ -43,11 +43,11 @@
                         disabled
                     <% } %>
                 />
-            </form>
             
-            <% if (isAdmin) { %>
-                <p>Admins cannot delete their own account</p>
-            <% } %>
+                <% if (isAdmin) { %>
+                    <p style="font-size: 14px;">(Admins cannot delete their own account)</p>
+                <% } %>
+            </form>
         </ul>
     </body>
     <!-- Page -->
