@@ -3,7 +3,7 @@
 
     /* BACKGROUND */
     --bg-primary: #fffcfb; /* Warm paper white */
-    --bg-secondary: #ddfbf5; /* Soft Mint/Sage tint */
+    --bg-secondary: #eefbf8; /* Soft Mint/Sage tint */
 
     /* TEXT *//* TEXT */
     --text-primary: #000000; /* Very dark forest green */
@@ -13,7 +13,7 @@
     --button-bg-primary: #f43f5e;
     --button-text-primary: #ffffff;
 
-    --button-bg-secondary: #d1fae5; /* Pale Mint */
+    --button-bg-secondary: #d3faec; /* Pale Mint */
     --button-text-secondary: #065f46; /* Deep Emerald */
 
     /* ANCHORS */
