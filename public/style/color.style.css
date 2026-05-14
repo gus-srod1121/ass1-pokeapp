@@ -1,24 +1,22 @@
 :root {
-    /* LIGHT MODE */
-
-    /* BACKGROUND */
+    /* LIGHT MODE *//* BACKGROUND */
     --bg-primary: #ffffff;
-    --bg-secondary: #d3dfec;
+    --bg-secondary: #effcff;
 
     /* TEXT */
-    --text-primary: #060f1f;
-    --text-secondary: #64748b;
+    --text-primary: #000000;
+    --text-secondary: #2c2393;
 
     /* BUTTONS */
-    --button-bg-primary: #e3def3;
-    --button-text-primary: #000000;
+    --button-bg-primary: #f43f5e;
+    --button-text-primary: #ffffff;
 
-    --button-bg-secondary: #b1b6da;
-    --button-text-secondary: #0f172a;
+    --button-bg-secondary: #e0e7ff;
+    --button-text-secondary: #312e81;
 
     /* ANCHORS */
-    --anchor-text: #2036b3;
-    --anchor-text-visited: #8b2eef;
+    --anchor-text: #4338ca;
+    --anchor-text-visited: #9927db;
 
     /* OTHER */
     --shadow: rgba(0, 0, 0, 0.3);
@@ -45,6 +43,14 @@
     /* ANCHORS */
     --anchor-text: #7885d2;
     --anchor-text-visited: #ab83d6;
+}
+
+.secondary, .secondary-bg {
+    background-color: var(--bg-secondary);
+}
+
+.secondary, .secondary-text {
+    color: var(--text-secondary);
 }
 
 body {
