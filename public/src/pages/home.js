@@ -41,7 +41,7 @@ async function fetchPokemon() {
     const totalPages = Math.ceil(filteredPokemonRefs.length / limit) || 1;
 
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    prevButton.disabled = currentOffset === 0;
+    prevButton.disabled = currentOffset == 0;
     nextButton.disabled = currentOffset + limit >= filteredPokemonRefs.length;
 }
 
@@ -50,7 +50,6 @@ async function populateTypeFilter() {
         const response = await fetch("https://pokeapi.co/api/v2/type");
         const data = await response.json();
         data.results
-            .filter((t) => t.name !== "shadow" && t.name !== "unknown")
             .forEach((type) => {
                 const btn = document.createElement("button");
                 btn.classList.add("type-chip");
@@ -65,7 +64,7 @@ async function populateTypeFilter() {
 
 function toggleType(typeName, element) {
     if (selectedTypes.includes(typeName)) {
-        selectedTypes = selectedTypes.filter((t) => t !== typeName);
+        selectedTypes = selectedTypes.filter((t) => t != typeName);
         element.classList.remove("active");
     } else {
         selectedTypes.push(typeName);
@@ -77,7 +76,7 @@ function toggleType(typeName, element) {
 async function handleFilters() {
     const term = searchInput.value.toLowerCase();
 
-    if (selectedTypes.length === 0) {
+    if (selectedTypes.length == 0) {
         filteredPokemonRefs = allPokemonRefs.filter((p) => p.name.includes(term));
     } else {
         const typeData = await Promise.all(
@@ -184,7 +183,6 @@ function setUpEventListeners() {
     try {
         filtersButton.onclick = () => {
             typeFilterContainer.classList.toggle("hidden");
-            // Change button text based on state
             const isHidden = typeFilterContainer.classList.contains("hidden");
         };
 
