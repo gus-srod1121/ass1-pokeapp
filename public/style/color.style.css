@@ -6,7 +6,7 @@
     --bg-secondary: #d3dfec;
 
     /* TEXT */
-    --text-primary: #1e293b;
+    --text-primary: #060f1f;
     --text-secondary: #64748b;
 
     /* BUTTONS */
@@ -36,10 +36,10 @@
     --text-secondary: #94a3b8;
 
     /* BUTTONS */
-    --button-bg-primary: #6769cc;
+    --button-bg-primary: #4e4f9f;
     --button-text-primary: #ffffff;
 
-    --button-bg-secondary: #334155;
+    --button-bg-secondary: #647081;
     --button-text-secondary: #f1f5f9;
 
     /* ANCHORS */

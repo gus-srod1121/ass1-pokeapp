@@ -40,3 +40,10 @@
 
     padding: 16px 24px;
 }
+
+.button-row > button {
+    font-size: 32px;
+    font-weight: bolder;
+
+    padding: 20px;
+}
