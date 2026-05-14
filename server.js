@@ -308,14 +308,32 @@ app.get("/admin/userData", async (req, res) => {
 });
 
 app.post("/admin/update-user", isAdmin, async (req, res) => {
-    const { targetUsername, newUsername, makeAdmin } = req.body;
-    const adminStatus = makeAdmin == "on";
+    try {
+        const { targetUsername, newUsername } = req.body;
 
-    await userModel.updateOne(
-        { username: targetUsername },
-        { $set: { username: newUsername, isAdmin: adminStatus } }
-    );
-    res.redirect("/admin");
+        const targetUser = await userModel.findOne({
+            username: targetUsername,
+        });
+
+        if (!targetUser) {
+            return res.status(404).send("User not found");
+        }
+
+        if (targetUser.isAdmin) {
+            res.status(403).send("Cannot edit other admins' usernames");
+        }
+
+        await userModel.updateOne(
+            { username: targetUsername },
+            { username: newUsername }
+        );
+        await favoritesModel.updateMany({ username: targetUsername }, { username: newUsername });
+        await timelineModel.updateMany({ username: targetUsername }, { username: newUsername });
+
+        res.status(200);
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 app.post("/admin/delete-user", isAdmin, async (req, res) => {

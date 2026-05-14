@@ -14,7 +14,7 @@ function displayUserList(users, currentUser) {
 
             return `
             <div class="user-item" id="row-${user.username}">
-                <div class="user-info">
+                <div class="user-info" id="display-${user.username}">
                     <strong>User: '${user.username}'</strong>
                     ${
                         isSelf
@@ -26,8 +26,8 @@ function displayUserList(users, currentUser) {
                 </div>
 
                 <div class="user-info hidden" id="edit-form-${user.username}">
-                    <input type="text" id="input-${user.username}" value="${user.username}">
-                    <button class="secondary" onclick="submitNameChange('${user.username}')">Save</button>
+                    <input style="width: 100%;" type="text" id="input-${user.username}" value="${user.username}">
+                    <button onclick="submitNameChange('${user.username}')">Save</button>
                     <button onclick="toggleEditView('${user.username}')">Cancel</button>
                 </div>
 
@@ -58,12 +58,12 @@ function toggleEditView(username) {
     document.getElementById(`edit-form-${username}`).classList.toggle("hidden");
 }
 
-async function submitNameChange(oldUsername) {
-    const newUsername = document.getElementById(`input-${oldUsername}`).value;
-    const response = await fetch("/admin/update-user-json", {
+async function submitNameChange(targetUsername) {
+    const newUsername = document.getElementById(`input-${targetUsername}`).value;
+    const response = await fetch("/admin/update-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ oldUsername, newUsername }),
+        body: JSON.stringify({ targetUsername, newUsername }),
     });
     if (response.ok) window.location.reload();
 }
