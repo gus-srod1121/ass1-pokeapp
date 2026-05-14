@@ -5,19 +5,43 @@ import {
     fetchPokemonList,
 } from "./../modules/pokemon.js";
 
-async function displayPokemon() {
-    const pokemonData = await fetchPokemonList();
+let allPokemonRefs = [];
+let filteredPokemonRefs = [];
+let currentOffset = 0;
+const limit = 10;
+
+const pokemonList = document.getElementById("pokemon-list");
+
+const searchInput = document.getElementById("search-input");
+const prevButton = document.getElementById("prev-button");
+const pageInfo = document.getElementById("page-num");
+const nextButton = document.getElementById("next-button");
+
+async function fetchPokemon() {
+    pokemonList.innerHTML = "<li>Loading Pokémon...</li>";
+
+    const pageItems = filteredPokemonRefs.slice(currentOffset, currentOffset + limit);
+
     const pokemonDetails = await Promise.all(
-        pokemonData.results.map((p) => fetchPokemonDetailsFromURL(p.url))
+        pageItems.map((p) => fetchPokemonDetailsFromURL(p.url))
     );
 
-    const pokemonList = document.getElementById("pokemon-list");
     pokemonList.innerHTML = "";
+    if (pokemonDetails.length === 0) {
+        pokemonList.innerHTML = "<li>No Pokémon found.</li>";
+    }
 
     for (const pokemon of pokemonDetails) {
         const pokeCard = createPokemonCard(pokemon, addToFavorites);
         pokemonList.appendChild(pokeCard);
     }
+
+    const currentPage = Math.floor(currentOffset / limit) + 1;
+    const totalPages = Math.ceil(filteredPokemonRefs.length / limit) || 1;
+
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    prevButton.disabled = currentOffset === 0;
+    nextButton.disabled = currentOffset + limit >= filteredPokemonRefs.length;
 }
 
 async function addToFavorites(pokemonName) {
@@ -50,7 +74,9 @@ async function fetchFavorites() {
 
         favoritesList.innerHTML = "";
 
-        const detailPromises = favoritesData.map((fav) => fetchPokemonDetailsFromName(fav.pokeName));
+        const detailPromises = favoritesData.map((fav) =>
+            fetchPokemonDetailsFromName(fav.pokeName)
+        );
         const pokemonDetails = await Promise.all(detailPromises);
 
         for (const pokemon of pokemonDetails) {
@@ -95,6 +121,7 @@ async function removeTimelineEvent(eventId) {
 }
 
 function refresh() {
+    fetchPokemon();
     fetchFavorites();
     fetchTimelineEvents();
 }
@@ -103,9 +130,40 @@ function attachFunctionToWindow() {
     window.removeTimelineEvent = removeTimelineEvent;
 }
 
-function setup() {
+function setUpEventListeners() {
+    try {
+        searchInput.addEventListener("input", (e) => {
+            const term = e.target.value.toLowerCase();
+            filteredPokemonRefs = allPokemonRefs.filter((p) => p.name.includes(term));
+            currentOffset = 0;
+            fetchPokemon(); // Changed from displayPokemon to fetchPokemon
+        });
+
+        prevButton.onclick = () => {
+            if (currentOffset >= limit) {
+                currentOffset -= limit;
+                fetchPokemon();
+            }
+        };
+
+        nextButton.onclick = () => {
+            if (currentOffset + limit < filteredPokemonRefs.length) {
+                currentOffset += limit;
+                fetchPokemon();
+            }
+        };
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function setup() {
+    const data = await fetchPokemonList(2000, 0);
+    allPokemonRefs = data.results;
+    filteredPokemonRefs = allPokemonRefs;
+
     attachFunctionToWindow();
-    displayPokemon();
+    setUpEventListeners();
     refresh();
 }
 
